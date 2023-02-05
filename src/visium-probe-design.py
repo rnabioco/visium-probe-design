@@ -151,8 +151,8 @@ def _check_lhs_seq(seq):
     >>> _check_lhs_seq(seq1)
     True
 
-    >>> seq1 = 'ATGTC'
-    >>> _check_lhs_seq(seq1)
+    >>> seq2 = 'ATGTC'
+    >>> _check_lhs_seq(seq2)
     False
     '''
     if seq[-1] == 'T':
