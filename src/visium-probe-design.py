@@ -59,11 +59,10 @@ def main(target_fasta, output_fasta):
 
         last_pos = None
         for probe in probes:
-            if not last_pos:
-                last_pos = probe.lhs_start
+            # ensure probe pairs are at least 50 nt away from another
+            # probe pair
+            if last_pos and abs(probe.lhs_start - last_pos) < (PROBE_LEN * 2):
                 continue
-
-            if abs(probe.lhs_start - last_pos) < (PROBE_LEN * 2): continue
 
             keep_probes[id].append(probe)
             last_pos = probe.lhs_start
