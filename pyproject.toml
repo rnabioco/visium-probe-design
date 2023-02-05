@@ -1,11 +1,11 @@
 [tool.poetry]
-name = "design-10x-fixed-probes"
+name = "visium-design-probes"
 version = "0.1.0"
 description = "Design probes for the 10x Genomics Fixed RNA assay"
 authors = ["Jay Hesselberth <jay.hesselberth@cuanschutz.edu>"]
 license = "MIT"
 readme = "README.md"
-packages = [{include = "design_10x_fixed_probes"}]
+packages = [{include = "visium-design-probes"}]
 
 [tool.poetry.dependencies]
 python = "^3.10"
