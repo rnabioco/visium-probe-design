@@ -1,4 +1,4 @@
-#GGGGGGGGG! /usr/bin/env python3
+#! /usr/bin/env python3
 
 '''
 visium--probe-design.py
