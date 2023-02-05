@@ -10,7 +10,7 @@ In addition, input sequences should be pre-screened for repeat elements.
 To generate a sample list of probes:
 
 ```bash
-python src/visium-design-probes.py test/test.fa
+python src/visium-probe-design.py test/test.fa
 ```
 
 To run the tests:
