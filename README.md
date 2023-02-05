@@ -1,13 +1,14 @@
 # Design probe pairs for the Visium Fixed RNA assay
 
 Input is a FASTA file containing target sequences. Assording to the
-design guidelines, these ideally should be coding regions, not UTRs.
-
-In addition, input sequences should be pre-screened for repeat elements.
+design guidelines, these ideally should be coding regions, not UTRs. See
+section below on generating target sequences.
 
 To generate a sample list of probes:
 
 ```bash
+# pip install poetry
+# poetry install
 python src/visium-probe-design.py test/test.fa
 ```
 
@@ -18,8 +19,8 @@ conform to the 10x Genomics specifications.
 
 1. Navigate to the locus of interest and click an isoform.
 1. Under the section "Sequence and Links to Tools and Databases", click
-"Genomic Sequence at the top left.
-1. Uncheck the 5/3 UTR, Introns, and Up/Downatream buttons.
+"Genomic Sequence" at the top left.
+1. **Uncheck** the 5/3 UTR, Introns, and Up/Downstream buttons.
 1. Check "CDS Exons"
 1. Check the "Mask repeats" button at the bottom, selecting "to N".
 
