@@ -34,8 +34,10 @@ HOMOP_MAX = 3
 ALLOWED_NUCS = set(['A','G','T','C']) 
 
 @click.command()
+@click.option('--output_fasta', default=False, is_flag=True)
 @click.argument('target_fasta')
-def main(target_fasta):
+
+def main(target_fasta, output_fasta):
     cand_probes = defaultdict(list)
 
     for record in SeqIO.parse(open(target_fasta), format = 'fasta'):
@@ -66,16 +68,22 @@ def main(target_fasta):
             keep_probes[id].append(probe)
             last_pos = probe.lhs_start
 
-    colnames = ['#id', 'pos', 'hyb_lhs', 'hyb_rhs', 'probe_lhs', 'probe_rhs']
-    print('\t'.join(colnames))
+    if not output_fasta:
+        colnames = ['#id', 'pos', 'hyb_lhs', 'hyb_rhs', 'probe_lhs', 'probe_rhs']
+        print('\t'.join(colnames))
 
     for id, probes in keep_probes.items():
         for probe in probes:
             fields = [id, probe.lhs_start,
                       probe.lhs, probe.rhs,
                       PROBE_LHS + probe.lhs,
-                      MOD_RHS + probe.rhs + PROBE_RHS]        
-            print('\t'.join(map(str, fields)))
+                      MOD_RHS + probe.rhs + PROBE_RHS]
+
+            if output_fasta:
+                print('>%s-%d-lhs\n%s' % (id, probe.lhs_start, probe.lhs))
+                print('>%s-%d-rhs\n%s' % (id, probe.lhs_start, probe.rhs))
+            else:
+                print('\t'.join(map(str, fields)))
 
 class ProbePair():
     def __init__(self, lhs, rhs, pos):
@@ -121,7 +129,7 @@ def _check_gc(seq):
 def _check_homopolymer(seq):
     '''
     use rle to check homopolymer stretches.
-    return: True if any stretches greater then max_len
+    return: False if any stretches greater then max_len
 
     >>> seq1 = 'AAAATTTTCCCCGGGG'
     >>> _check_homopolymer(seq1)
