@@ -1,19 +1,23 @@
 #! /usr/bin/env python3
 
 '''
-visium--probe-design.py
+visium-probe-design.py
 
-Design a set of ligation-based probes for the 10x Genomics Visium fixed RNA assay.
+Design a set of ligation-based probes for the 10x Genomics Visium fixed RNA
+assay.
 
-Input is a FASTA of mRNA sequence targets.
+Input is a FASTA of mRNA sequence targets. Guidelines for these sequeces are in
+the README. 
 
-A PDF from 10x with design guidelines is in `/doc`.
+Default output is a TSV of probe designs to be synthesized. Specify
+`--output_fasta` to generate a FASTA of hybridization portions that can be
+compared to genomic sequence.
+
+A PDF from 10x Genomics with design guidelines is in `/doc`.
 '''
 
 __author__ = 'Jay Hesselberth <jay.hesselberth@cuanschutz.edu>'
 __licence__ = 'MIT'
-
-import pdb
 
 from collections import Counter, defaultdict
 
@@ -38,8 +42,9 @@ ALLOWED_NUCS = set(['A','G','T','C'])
 @click.argument('target_fasta')
 
 def main(target_fasta, output_fasta):
-    cand_probes = defaultdict(list)
 
+    # generate all possible probes and identify candidates
+    cand_probes = defaultdict(list)
     for record in SeqIO.parse(open(target_fasta), format = 'fasta'):
         rc_seq = record.seq.reverse_complement()
 
@@ -54,6 +59,7 @@ def main(target_fasta, output_fasta):
 
             cand_probes[record.id].append(ProbePair(lhs, rhs, pos))
 
+    # evaluate candidate probes to ensure spacing between them 
     keep_probes = defaultdict(list)
     for id, probes in cand_probes.items():
 
@@ -67,8 +73,10 @@ def main(target_fasta, output_fasta):
             keep_probes[id].append(probe)
             last_pos = probe.lhs_start
 
+    # report the probes in TSV or FASTA format
     if not output_fasta:
-        colnames = ['#id', 'pos', 'hyb_lhs', 'hyb_rhs', 'probe_lhs', 'probe_rhs']
+        colnames = ['#id', 'pos', 'hyb_lhs',
+                    'hyb_rhs', 'probe_lhs', 'probe_rhs']
         print('\t'.join(colnames))
 
     for id, probes in keep_probes.items():
@@ -79,8 +87,8 @@ def main(target_fasta, output_fasta):
                       MOD_RHS + probe.rhs + PROBE_RHS]
 
             if output_fasta:
-                print('>%s-%d-lhs\n%s' % (id, probe.lhs_start, probe.lhs))
-                print('>%s-%d-rhs\n%s' % (id, probe.lhs_start, probe.rhs))
+                print(f'>{id}-{probe.lhs_start}-lhs\n{probe.lhs}')
+                print(f'>{id}-{probe.lhs_start}-rhs\n{probe.rhs}')
             else:
                 print('\t'.join(map(str, fields)))
 
@@ -139,7 +147,7 @@ def _check_homopolymer(seq):
     True
     '''
     hps = rle.encode(seq)
-    return not any([i > HOMOP_MAX for i in hps[1]])
+    return all([i <= HOMOP_MAX for i in hps[1]])
 
 def _check_lhs_seq(seq):
     '''
