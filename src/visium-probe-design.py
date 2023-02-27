@@ -13,6 +13,10 @@ Default output is a TSV of probe designs to be synthesized. Specify
 `--output_fasta` to generate a FASTA of hybridization portions that can be
 compared to genomic sequence.
 
+Example:
+
+$ python src/visium-probe-design.py test/test.fa
+
 A PDF from 10x Genomics with design guidelines is in `/doc`.
 '''
 
