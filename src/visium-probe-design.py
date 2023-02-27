@@ -90,12 +90,17 @@ def main(target_fasta, output_fasta):
                 print(f'>{id}-{probe.lhs_start}-lhs\n{probe.lhs}')
                 print(f'>{id}-{probe.lhs_start}-rhs\n{probe.rhs}')
             else:
-                fields = [id, probe.lhs_start,
-                  probe.lhs, probe.rhs,
+                fields_left = [id+'-lhs', probe.lhs_start,
+                  probe.lhs,
                   PROBE_LHS + probe.lhs,
+                  ]
+                fields_right = [id+'-rhs', probe.lhs_start,
+                  probe.rhs,
                   MOD_RHS + probe.rhs + PROBE_RHS]
 
-                print('\t'.join(map(str, fields)))
+                print('\t'.join(map(str, fields_left)))
+                print('\t'.join(map(str, fields_right)))
+
 
 class ProbePair():
     def __init__(self, lhs, rhs, pos):
