@@ -28,7 +28,7 @@ from Bio import SeqIO
 
 PROBE_LHS = 'CCTTGGCACCCGAGAATTCCA'
 PROBE_RHS = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
-MOD_RHS   = '/5Phos/-'
+MOD_RHS   = '/5Phos/'
 
 PROBE_LEN = 25
 GC_MAX    = 0.73
@@ -81,15 +81,16 @@ def main(target_fasta, output_fasta):
 
     for id, probes in keep_probes.items():
         for probe in probes:
-            fields = [id, probe.lhs_start,
-                      probe.lhs, probe.rhs,
-                      PROBE_LHS + probe.lhs,
-                      MOD_RHS + probe.rhs + PROBE_RHS]
 
             if output_fasta:
                 print(f'>{id}-{probe.lhs_start}-lhs\n{probe.lhs}')
                 print(f'>{id}-{probe.lhs_start}-rhs\n{probe.rhs}')
             else:
+                fields = [id, probe.lhs_start,
+                  probe.lhs, probe.rhs,
+                  PROBE_LHS + probe.lhs,
+                  MOD_RHS + probe.rhs + PROBE_RHS]
+
                 print('\t'.join(map(str, fields)))
 
 class ProbePair():
