@@ -79,8 +79,7 @@ def main(target_fasta, output_fasta):
 
     # report the probes in TSV or FASTA format
     if not output_fasta:
-        colnames = ['#id', 'pos', 'hyb_lhs',
-                    'hyb_rhs', 'probe_lhs', 'probe_rhs']
+        colnames = ['#id', 'pos', 'hyb_region', 'probe']
         print('\t'.join(colnames))
 
     for id, probes in keep_probes.items():
@@ -92,8 +91,7 @@ def main(target_fasta, output_fasta):
             else:
                 fields_left = [id+'-lhs', probe.lhs_start,
                   probe.lhs,
-                  PROBE_LHS + probe.lhs,
-                  ]
+                  PROBE_LHS + probe.lhs]
                 fields_right = [id+'-rhs', probe.lhs_start,
                   probe.rhs,
                   MOD_RHS + probe.rhs + PROBE_RHS]
