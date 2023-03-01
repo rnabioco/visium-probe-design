@@ -21,7 +21,7 @@ A PDF from 10x Genomics with design guidelines is in `/doc`.
 '''
 
 __author__ = 'Jay Hesselberth <jay.hesselberth@cuanschutz.edu>'
-__licence__ = 'MIT'
+__license__ = 'MIT'
 
 from collections import Counter, defaultdict
 
@@ -34,6 +34,9 @@ PROBE_LHS = 'CCTTGGCACCCGAGAATTCCA'
 PROBE_RHS = 'AAAAAAAAAAAAAAAAAAAAAAAAAAAAAA'
 MOD_RHS   = '/5Phos/'
 
+IDT_SCALE = '25nm'
+IDT_PURIF = 'STD'
+
 PROBE_LEN = 25
 GC_MAX    = 0.73
 GC_MIN    = 0.44
@@ -43,9 +46,10 @@ ALLOWED_NUCS = set(['A','G','T','C'])
 
 @click.command()
 @click.option('--output_fasta', default=False, is_flag=True)
+@click.option('--idt', default=False, is_flag=True)
 @click.argument('target_fasta')
 
-def main(target_fasta, output_fasta):
+def main(target_fasta, output_fasta, idt):
 
     # generate all possible probes and identify candidates
     cand_probes = defaultdict(list)
@@ -79,8 +83,12 @@ def main(target_fasta, output_fasta):
 
     # report the probes in TSV or FASTA format
     if not output_fasta:
-        colnames = ['#id', 'pos', 'hyb_region', 'probe']
-        print('\t'.join(colnames))
+        if idt:
+            colnames = ['#id', 'sequence', 'scale', 'purification']
+            print('\t'.join(colnames))
+        else:
+            colnames = ['#id', 'pos', 'hyb_region', 'probe']
+            print('\t'.join(colnames))
 
     for id, probes in keep_probes.items():
         for probe in probes:
@@ -88,6 +96,14 @@ def main(target_fasta, output_fasta):
             if output_fasta:
                 print(f'>{id}-{probe.lhs_start}-lhs\n{probe.lhs}')
                 print(f'>{id}-{probe.lhs_start}-rhs\n{probe.rhs}')
+            elif idt:
+                fields_left = [id+'-lhs', PROBE_LHS + probe.lhs,
+                               IDT_SCALE, IDT_PURIF]
+                fields_right = [id+'-rhs', MOD_RHS + probe.rhs + PROBE_RHS,
+                               IDT_SCALE, IDT_PURIF]
+
+                print('\t'.join(map(str, fields_left)))
+                print('\t'.join(map(str, fields_right)))
             else:
                 fields_left = [id+'-lhs', probe.lhs_start,
                   probe.lhs,
