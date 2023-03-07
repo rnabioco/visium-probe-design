@@ -9,9 +9,13 @@ assay.
 Input is a FASTA of mRNA sequence targets. Guidelines for these sequeces are in
 the README. 
 
-Default output is a TSV of probe designs to be synthesized. Specify
-`--output_fasta` to generate a FASTA of hybridization portions that can be
-compared to genomic sequence.
+Default output is a TSV of probe designs to be synthesized.
+
+Specify `--output_fasta` to generate a FASTA of hybridization portions that can
+be compared to genomic sequence.
+
+Specify `--idt` to generate probes in a format for easy pasting into an IDT
+ordering spreadsheet.
 
 Example:
 
@@ -97,18 +101,18 @@ def main(target_fasta, output_fasta, idt):
                 print(f'>{id}-{probe.lhs_start}-lhs\n{probe.lhs}')
                 print(f'>{id}-{probe.lhs_start}-rhs\n{probe.rhs}')
             elif idt:
-                fields_left = [id+'-lhs', PROBE_LHS + probe.lhs,
+                fields_left = [id+'-'+str(probe.lhs_start)+'-lhs', PROBE_LHS + probe.lhs,
                                IDT_SCALE, IDT_PURIF]
-                fields_right = [id+'-rhs', MOD_RHS + probe.rhs + PROBE_RHS,
+                fields_right = [id+'-'+str(probe.lhs_start)+'-rhs', MOD_RHS + probe.rhs + PROBE_RHS,
                                IDT_SCALE, IDT_PURIF]
 
                 print('\t'.join(map(str, fields_left)))
                 print('\t'.join(map(str, fields_right)))
             else:
-                fields_left = [id+'-lhs', probe.lhs_start,
+                fields_left = [id+'-'+str(probe.lhs_start)+'-lhs', probe.lhs_start,
                   probe.lhs,
                   PROBE_LHS + probe.lhs]
-                fields_right = [id+'-rhs', probe.lhs_start,
+                fields_right = [id+'-'+str(probe.lhs_start)+'-rhs', probe.lhs_start,
                   probe.rhs,
                   MOD_RHS + probe.rhs + PROBE_RHS]
 
